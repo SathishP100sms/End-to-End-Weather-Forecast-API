@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>🌦️ AI Probabilistic Weather Forecast</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1><span class="logo">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <path d="M6 14a4 4 0 010-8 5 5 0 019.9 1.2A3.5 3.5 0 1116 17H7a3 3 0 01-1-3z" fill="#FFFFFF" opacity="0.95"/>
+                <circle cx="17" cy="7" r="3" fill="#FFDD57"/>
+            </svg>
+        </span>AI Probabilistic Weather Forecast</h1>
+        <p>Advanced AI-Powered Weather Predictions</p>
+        <button id="themeToggle" class="theme-toggle"><span class="theme-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" fill="#ffffff"/>
+            </svg>
+        </span> Dark Mode</button>
+    </header>
+
+    <div class="search-box">
+        <form id="searchForm">
+            <input type="text" id="cityInput"
+                   placeholder="Enter City Name (e.g., London, Tokyo, New York)"
+                   required>
+            <button type="submit" id="predictBtn"><span class="btn-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <path d="M12 2v6" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M5 22l7-7 7 7" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </span> Predict Weather</button>
+        </form>
+    </div>
+
+    <div id="loadingDiv" class="loading hidden">
+        <div>Fetching weather & predicting...</div>
+        <div class="spinner"></div>
+    </div>
+
+    <div id="errorDiv" class="error hidden"></div>
+
+    <div id="resultsDiv" class="results hidden">
+
+        <div class="current-weather">
+            <h2>📌 Current Weather in <span id="cityName"></span></h2>
+            <div class="weather-grid">
+                <div class="weather-item">
+                    <span class="emoji icon">
+                        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                            <rect x="10" y="3" width="4" height="12" rx="2" fill="#667eea"/>
+                            <circle cx="12" cy="18" r="3" fill="#667eea"/>
+                        </svg>
+                    </span>
+                    <div class="label">Temperature</div>
+                    <div class="value" id="temp">-</div>
+                </div>
+                <div class="weather-item">
+                    <span class="emoji icon">
+                        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                            <path d="M12 2C9 6 7 8.5 7 11a5 5 0 0010 0c0-2.5-2-5-5-9z" fill="#48bb78"/>
+                        </svg>
+                    </span>
+                    <div class="label">Humidity</div>
+                    <div class="value" id="humidity">-</div>
+                </div>
+                <div class="weather-item">
+                    <span class="emoji icon">
+                        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                            <path d="M3 12h13a4 4 0 010 8H6" stroke="#7f9cf5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M3 6h9" stroke="#7f9cf5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </span>
+                    <div class="label">Wind</div>
+                    <div class="value" id="wind">-</div>
+                </div>
+                <div class="weather-item">
+                    <span class="emoji icon">
+                        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                            <path d="M20 17.5A4.5 4.5 0 0015.5 13H14a4 4 0 10-7.9 1.5" fill="#cbd5e1"/>
+                        </svg>
+                    </span>
+                    <div class="label">Cloud Cover</div>
+                    <div class="value" id="cloud">-</div>
+                </div>
+                <div class="weather-item">
+                    <span class="emoji icon">
+                        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                            <circle cx="12" cy="12" r="7" stroke="#f6ad55" stroke-width="1.5" fill="none"/>
+                            <path d="M12 7v6l3 2" stroke="#f6ad55" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </span>
+                    <div class="label">Pressure</div>
+                    <div class="value" id="pressure">-</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="forecast-section">
+            <h2>📈 7-Day Temperature Forecast</h2>
+            <div class="chart-container">
+                <canvas id="temperatureChart"></canvas>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+let chart = null;
+const predictBtnDefaultHTML = document.getElementById('predictBtn').innerHTML;
+
+document.getElementById('cityInput').focus();
+
+document.getElementById('searchForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const city = document.getElementById('cityInput').value.trim();
+    if (!city) return showError("Please enter a city name");
+    await fetchForecast(city);
+});
+
+async function fetchForecast(city) {
+
+    const loadingDiv = document.getElementById('loadingDiv');
+    const errorDiv = document.getElementById('errorDiv');
+    const resultsDiv = document.getElementById('resultsDiv');
+    const button = document.getElementById('predictBtn');
+
+    loadingDiv.classList.remove('hidden');
+    errorDiv.classList.add('hidden');
+    resultsDiv.classList.add('hidden');
+    button.disabled = true;
+    button.innerHTML = '<span class="btn-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="12" cy="12" r="10" stroke="rgba(255,255,255,0.25)" stroke-width="2"/><path d="M22 12a10 10 0 00-10-10" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></span> Predicting...';
+
+    try {
+        const response = await fetch(`https://ai-weather-prediction-pyqg.onrender.com/api/forecast/${encodeURIComponent(city)}`);
+
+        if (!response.ok) {
+            let errorMessage = "Failed to fetch forecast";
+            try {
+                const errorData = await response.json();
+                errorMessage = errorData.detail || errorMessage;
+            } catch (_) {}
+            throw new Error(errorMessage);
+        }
+
+        const data = await response.json();
+        displayForecast(data);
+
+        loadingDiv.classList.add('hidden');
+        resultsDiv.classList.remove('hidden');
+
+    } catch (error) {
+        loadingDiv.classList.add('hidden');
+        showError(error.message);
+    }
+
+    button.disabled = false;
+    button.innerHTML = predictBtnDefaultHTML;
+}
+
+function displayForecast(data) {
+    document.getElementById('cityName').textContent = data.city;
+    const temp = (typeof data.current.temperature_celsius === 'number') ? Number(data.current.temperature_celsius).toFixed(1) : '-';
+    const humidity = (typeof data.current.humidity === 'number') ? Math.round(data.current.humidity) : '-';
+    const wind = (typeof data.current.wind_kph === 'number') ? Number(data.current.wind_kph).toFixed(1) : '-';
+    const cloud = (typeof data.current.cloud === 'number') ? Math.round(data.current.cloud) : '-';
+    const pressure = (typeof data.current.pressure_mb === 'number') ? Math.round(data.current.pressure_mb) : '-';
+
+    document.getElementById('temp').textContent = temp + "°C";
+    document.getElementById('humidity').textContent = humidity + "%";
+    document.getElementById('wind').textContent = wind + " km/h";
+    document.getElementById('cloud').textContent = cloud + "%";
+    document.getElementById('pressure').textContent = pressure + " mb";
+
+    updateChart(data.forecast);
+}
+
+function updateChart(forecast) {
+
+    const labels = forecast.map(day => formatShortDate(day.date));
+    const median = forecast.map(day => day.median_50);
+    const lower = forecast.map(day => day.lower_10);
+    const upper = forecast.map(day => day.upper_90);
+
+    const ctx = document.getElementById('temperatureChart');
+
+    if (chart) chart.destroy();
+
+    chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [
+                {
+                    label: 'Lower (10%)',
+                    data: lower,
+                    borderColor: 'transparent',
+                    backgroundColor: 'rgba(100, 181, 246, 0.15)',
+                    fill: false,
+                    pointRadius: 0
+                },
+                {
+                    label: 'Confidence Band (10%-90%)',
+                    data: upper,
+                    borderColor: 'transparent',
+                    backgroundColor: 'rgba(102, 126, 234, 0.25)',
+                    fill: '-1',
+                    pointRadius: 0
+                },
+                {
+                    label: 'Median (50%)',
+                    data: median,
+                    borderColor: '#667eea',
+                    backgroundColor: '#667eea',
+                    borderWidth: 4,
+                    fill: false,
+                    tension: 0.4,
+                    pointRadius: 6,
+                    pointBackgroundColor: '#667eea',
+                    pointBorderColor: 'white',
+                    pointBorderWidth: 2
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: { mode: 'index', intersect: false },
+            scales: {
+                y: { title: { display: true, text: "Temperature (°C)" } }
+            }
+        }
+    });
+}
+
+function formatShortDate(dateStr) {
+    const date = new Date(dateStr);
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+}
+
+function showError(message) {
+    const errorDiv = document.getElementById('errorDiv');
+    errorDiv.textContent = message;
+    errorDiv.classList.remove('hidden');
+}
+
+/* ===== DARK MODE ===== */
+
+const toggleBtn = document.getElementById('themeToggle');
+
+if (localStorage.getItem('theme') === 'dark') {
+    document.body.classList.add('dark-mode');
+    toggleBtn.innerHTML = '<span class="theme-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="12" cy="12" r="4" fill="#FFD54A"/></svg></span> Light Mode';
+}
+
+toggleBtn.addEventListener('click', () => {
+    document.body.classList.toggle('dark-mode');
+
+    if (document.body.classList.contains('dark-mode')) {
+        toggleBtn.innerHTML = '<span class="theme-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="12" cy="12" r="4" fill="#FFD54A"/></svg></span> Light Mode';
+        localStorage.setItem('theme', 'dark');
+    } else {
+        toggleBtn.innerHTML = '<span class="theme-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" fill="#ffffff"/></svg></span> Dark Mode';
+        localStorage.setItem('theme', 'light');
+    }
+});
+</script>
+
+</body>
+</html>
