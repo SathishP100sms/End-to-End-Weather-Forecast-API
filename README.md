@@ -35,7 +35,7 @@ ai-weather-forecast/
 ## ⚙️ Setup
 
 ### Clone Repo
-git clone https://github.com/your-username/ai-weather-forecast.git
+git clone https://github.com/SathishP100sms/End-to-End-Weather-Forestcast-API
 
 ### Backend
 pip install -r requirements.txt
@@ -50,19 +50,6 @@ Open index.html
 
 ## 🔐 Env
 OPENWEATHER_API_KEY=your_key
-
-## 📊 Example API
-{
-  "city": "London",
-  "forecast": [
-    {"median_50": 23, "lower_10": 20, "upper_90": 26}
-  ]
-}
-
-## 🎯 Use Cases
-- ML portfolio
-- Weather prediction
-- Time-series learning
 
 ## 📜 License
 MIT
