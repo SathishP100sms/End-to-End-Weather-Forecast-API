@@ -3,8 +3,7 @@
 An AI-powered probabilistic weather forecasting system that predicts current weather and a 7-day forecast with uncertainty bands (10%–90%) using deep learning.
 
 ## 🚀 Live Demo
-Frontend: https://ai-powered-weather-forecast.netlify.app/  
-Backend: https://end-to-end-weather-forecast-api.onrender.com 
+Web APP : https://ai-powered-weather-forecast.netlify.app/  
 
 ## ✨ Features
 - Real-time weather data
