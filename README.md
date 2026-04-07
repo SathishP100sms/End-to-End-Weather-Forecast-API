@@ -52,4 +52,4 @@ Open index.html
 OPENWEATHER_API_KEY=your_key
 
 ## 📜 License
-MIT [LICENSE](license)
+MIT [LICENSE](LICENSE)
