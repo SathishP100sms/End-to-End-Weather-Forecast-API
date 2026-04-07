@@ -1,6 +1,6 @@
 # 🌦️ AI Probabilistic Weather Forecast
 
-An AI-powered probabilistic weather forecasting system that predicts current weather and a 7-day forecast with uncertainty bands (10%–90%) using deep learning.
+AI-powered probabilistic weather forecasting using deep learning. The app predicts current and next 7-day temperatures with uncertainty bands (10% - 90 %) using an Attention-based LSTM model, OpenWeather An AI-powered probabilistic weather forecasting system that predicts current temperature and the next 7-day forecast.
 
 ## 🚀 Live Demo
 Web APP : https://ai-powered-weather-forecast.netlify.app/  
@@ -16,6 +16,7 @@ Web APP : https://ai-powered-weather-forecast.netlify.app/
 - Attention-based LSTM
 - Time series forecasting
 - Built using TensorFlow/Keras
+- Open Weather API
 
 ## 🛠️ Tech Stack
 Frontend: HTML, CSS, JavaScript  
