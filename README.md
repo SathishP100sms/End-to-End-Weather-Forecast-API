@@ -3,7 +3,7 @@
 AI-powered probabilistic weather forecasting using deep learning. The app predicts current and next 7-day temperatures with uncertainty bands (10% - 90 %) using an Attention-based LSTM model, OpenWeather An AI-powered probabilistic weather forecasting system that predicts current temperature and the next 7-day forecast.
 
 ## 🚀 Live Demo
-Web APP : https://ai-powered-weather-forecast.netlify.app/  
+Web APP : [Weather-Forecast-Prediction](https://ai-powered-weather-forecast-api.vercel.app/)
 
 ## ✨ Features
 - Real-time weather data
@@ -44,9 +44,15 @@ uvicorn main:app --reload
 ### Frontend
 Open index.html
 
-## 🌍 Deployment
-- Backend → Render
-- Frontend → Netlify
+## 🌐 Deployment
+
+### Frontend
+
+* Vercel / Netlify
+
+### Backend
+
+* Render
 
 ## 🔐 Env
 OPENWEATHER_API_KEY=your_key
