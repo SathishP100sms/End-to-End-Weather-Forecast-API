@@ -47,7 +47,7 @@ app = FastAPI(title="AI Weather Forecast API")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["https://ai-powered-weather-forecast.netlify.app","https://ai-powered-weather-forecast-api.vercel.app"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
